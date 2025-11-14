@@ -1,7 +1,7 @@
 # Desafio Flutter
 
 Bem-vindo(a)! 👋  
-Este é o desafio para a vaga de **Desenvolvedor(a) Flutter Pleno**.
+Este é o desafio para a vaga de **Desenvolvedor(a) Flutter**.
 
 O objetivo é avaliar sua capacidade de:
 - Estruturar um projeto Flutter organizado
