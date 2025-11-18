@@ -112,4 +112,108 @@ Você pode usar uma das abordagens abaixo:
 
 ## 🔸 Organização do Projeto
 Sugestão (não obrigatória):
+lib/
+core/
+models/
+services/
+features/
+main_feature/
+data/
+domain/
+presentation/
+pages/
+widgets/
+main.dart
+
+
+## 🔸 Boas Práticas Obrigatórias
+- Código limpo
+- Uso de `const` sempre que possível
+- Separação clara de camadas
+- Nomeação coerente
+- Tratamento de exceções
+- Evitar lógica pesada no widget
+
+---
+
+# 🧪 **Testes Automatizados (obrigatórios)**
+
+Inclua pelo menos:
+
+### ✔ 1 teste unitário  
+Exemplos:
+- Validador
+- Serviço
+- Use case
+- Função de filtro
+
+### ✔ 1 teste de widget  
+Exemplos:
+- Página de lista
+- Página de detalhes
+- Estado de carregamento
+
+**Bônus:**
+- Testar estados de erro
+- Teste de integração simples
+
+---
+
+# 🎨 **Critérios de Avaliação**
+
+Avaliaremos:
+
+### **1. Arquitetura e Organização**
+- Separação adequada de camadas
+- Clareza do fluxo de dados (API → parsing → UI)
+
+### **2. Qualidade do Código**
+- Legibilidade
+- Consistência
+- Reutilização de widgets/componentes
+
+### **3. Qualidade da UI**
+- Clareza visual
+- Feedbacks ao usuário
+- Responsividade
+
+### **4. API e Lógica**
+- Tratamento completo dos erros
+- Paginação (caso a API permita)
+- Performance da listagem
+
+### **5. Persistência local**
+- Funcionamento correto dos favoritos
+
+### **6. Testes**
+- Clareza
+- Cobertura mínima atendida
+
+### **7. Documentação**
+- README final contendo:
+  - Versão do Flutter
+  - Como rodar o projeto
+  - Decisões técnicas
+
+---
+
+# 🚀 **Como Submeter**
+
+1. Faça um **fork** deste repositório  
+2. Implemente a solução no seu fork  
+3. Atualize o README do seu repositório com:
+   - Versão do Flutter (`flutter --version`)
+   - Como rodar o projeto
+   - Principais decisões técnicas tomadas
+4. Envie o link do repositório final para avaliação
+
+---
+
+# 📬 **Comandos esperados**
+
+```bash
+flutter pub get
+flutter run
+flutter test
+
 
