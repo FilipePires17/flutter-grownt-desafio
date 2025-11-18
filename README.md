@@ -1,152 +1,115 @@
-# Desafio Flutter
+# 📱 Desafio Técnico — Flutter
 
 Bem-vindo(a)! 👋  
-Este é o desafio para a vaga de **Desenvolvedor(a) Flutter**.
+Este é o desafio técnico para a vaga de **Desenvolvedor(a) Flutter Pleno**.
 
 O objetivo é avaliar sua capacidade de:
-- Estruturar um projeto Flutter organizado
-- Construir UI com boa usabilidade
-- Consumir e tratar dados de uma API
-- Gerenciar estado de forma consistente
-- Escrever testes automatizados (unitários e/ou de widget)
-- Versionar e documentar o código
+
+- Criar uma aplicação Flutter estruturada e escalável  
+- Consumir uma API pública real  
+- Trabalhar com estado, camadas e organização do código  
+- Construir telas com boa UX/UI  
+- Tratar erros e edge cases  
+- Persistir dados localmente  
+- Escrever testes (unitários e/ou widget)  
+- Documentar e versionar o projeto corretamente  
 
 ---
 
-## 📱 Desafio: App de Listagem e Detalhes de Projetos
+# 🎯 **Desafio: App de Listagem e Detalhes usando API Pública Real**
 
-Você deverá construir um app em Flutter que liste “projetos” (por exemplo, produtos digitais, tarefas, iniciativas) e permita:
+Você deve desenvolver um app Flutter que consome uma **API pública real** e implementa o seguinte fluxo:
 
-1. **Listar projetos**
-2. **Ver detalhes de um projeto**
-3. **Filtrar/pesquisar projetos**
-4. **Marcar projeto como favorito**
-5. **Persistir favoritos localmente**
-
-### Tema (exemplo)
-
-Você é responsável por um app chamado **"ProjectHub"**, que mostra uma lista de projetos de uma empresa de tecnologia.  
-Cada projeto deve conter pelo menos:
-
-- ID
-- Nome
-- Descrição resumida
-- Status (ex.: `Em andamento`, `Concluído`, `Pausado`)
-- Responsável (nome da pessoa)
-- Data de criação
-
-Você pode adaptar o contexto se quiser, desde que mantenha as funcionalidades.
+1. **Listagem principal**
+2. **Busca/filtro**
+3. **Tela de detalhes**
+4. **Favoritar/desfavoritar**
+5. **Persistência local dos favoritos**
+6. **Tratamento completo de estados: loading, error, empty**
+7. **Testes obrigatórios**
 
 ---
 
-## 🔌 API / Fonte de Dados
+# 🌐 **API Pública (obrigatória)**
 
-Você pode escolher uma das opções abaixo:
+Você deve integrar com **uma API pública real**, escolhendo **uma das opções abaixo**:
 
-1. **Mock local (recomendado para simplicidade no teste)**
-   - Criar um arquivo JSON local e simular uma API com um pequeno atraso (ex.: 1–2 segundos).
-   - Exemplo de estrutura:
+### 🔹 JSONPlaceholder  
+https://jsonplaceholder.typicode.com/  
+Sugerido: `/users`, `/posts`
 
-     ```json
-     [
-       {
-         "id": 1,
-         "nome": "Plataforma GT - Nexus",
-         "descricao": "Sistema de gestão de projetos e portfólio.",
-         "status": "Em andamento",
-         "responsavel": "Maria Souza",
-         "dataCriacao": "2024-01-10"
-       }
-     ]
-     ```
+### 🔹 GitHub Repositories  
+https://api.github.com/users/{usuario}/repos  
+Sugerido: listar repositórios de um usuário
 
-2. **API real (opcional)**
-   - Você pode consumir uma API pública de sua preferência, desde que explique no README como configurá-la.
+### 🔹 Rick and Morty API (recomendado)  
+https://rickandmortyapi.com/api  
+Sugerido: personagens → paginação + busca + detalhes
 
-> Importante: independente da fonte, trate carregamento, erro e estados vazios.
+### 🔹 PokeAPI  
+https://pokeapi.co/  
+Sugerido: lista + detalhes + tipos
+
+### 🔹 Open-Meteo  
+https://open-meteo.com/en/docs  
+Sugerido: previsão do tempo por cidade
+
+**Observação:**  
+Independente da API escolhida, trate **timeout, erros de rede e estados vazios**.
 
 ---
 
-## 🧩 Requisitos obrigatórios
+# 🧩 **Requisitos Funcionais**
 
-### 1. Tela de lista de projetos
-
+## 1️⃣ Tela de Lista
+- Listar elementos vindos da API
 - Mostrar:
-  - Nome do projeto
-  - Status
-  - Responsável
-- Exibir indicador de **carregando** enquanto busca os dados
-- Exibir uma mensagem amigável em caso de **erro** (e opção de tentar novamente)
-- Exibir uma mensagem quando **não houver dados**
+  - Nome/título do item
+  - Atributos principais (ex.: status, subtítulo, etc.)
+- Ícone para marcar/desmarcar **favorito**
+- Estados obrigatórios:
+  - Carregando (`loading`)
+  - Erro (com botão “tentar novamente”)
+  - Lista vazia
 
-### 2. Filtro / Busca
+## 2️⃣ Busca / Filtro
+- Deve permitir filtrar itens (nome, título, etc.)
+- Pode ser:
+  - Em tempo real (digitou → filtrou)
+  - Ou ao enviar o texto
 
-- Campo de busca por nome do projeto **ou** responsável
-- A busca pode ser:
-  - Em tempo real (conforme digita), ou
-  - Ao enviar (pressionar um botão de buscar)
+## 3️⃣ Tela de Detalhes
+- Mostrar todas as informações relevantes do item
+- Layout organizado e responsivo
 
-### 3. Tela de detalhes
+## 4️⃣ Favoritos
+- O usuário deve poder favoritar/desfavoritar
+- Exibir favoritos na lista com destaque visual
+- Implementar uma **aba** ou **filtro** “Somente Favoritos”
 
-Ao tocar em um item da lista, exibir uma tela com:
+## 5️⃣ Persistência Local
+Os favoritos devem ser salvos localmente usando uma dessas libs:
 
-- Nome
-- Descrição
-- Status
-- Responsável
-- Data de criação formatada (ex.: `10/01/2024`)
+- `shared_preferences`
+- `hive`
+- `get_storage`
+- similar
 
-### 4. Favoritos
-
-- Permitir marcar/desmarcar um projeto como **favorito**
-- Na lista, indicar visualmente quais estão favoritos (ex. um ícone de estrela)
-- Deve existir um filtro/aba simples para ver **apenas favoritos**
-
-### 5. Persistência local
-
-- Os favoritos devem ser persistidos localmente (por exemplo: `shared_preferences`, `hive` ou similar)
-- Ao fechar e abrir o app, as informações de favorito devem ser mantidas
-
-### 6. Gerenciamento de estado
-
-- Utilizar alguma abordagem/biblioteca de gerenciamento de estado:
-  - Pode ser **Riverpod**, **Bloc/Cubit**, **Provider**, **MobX**, etc.
-- O importante é estar bem organizado e coerente com o tamanho do projeto
+Ao fechar e abrir o app, as informações devem permanecer.
 
 ---
 
-## 🧪 Testes
+# 🧱 **Requisitos Técnicos**
 
-Inclua **ao menos**:
+## 🔸 Gerenciamento de Estado
+Você pode usar uma das abordagens abaixo:
 
-- 1 teste unitário (por exemplo, de uma classe de lógica, serviço, use case, etc.)
-- 1 teste de widget (por exemplo, da lista de projetos ou da tela de detalhes)
+- **Riverpod** (recomendado)
+- Bloc / Cubit
+- Provider
+- MobX
+- SetState com boa organização (não recomendado, mas aceito)
 
-Bônus se:
+## 🔸 Organização do Projeto
+Sugestão (não obrigatória):
 
-- Houver testes cobrindo estados de carregamento/erro
-- Houver boa cobertura de lógica (filtro, favoritos)
-
----
-
-## 🏗️ Organização do código
-
-Sugerimos (não obrigatório) algo como:
-
-```text
-lib/
-  core/
-    models/
-    services/
-  features/
-    projects/
-      presentation/
-        pages/
-        widgets/
-      domain/
-        entities/
-        usecases/
-      data/
-        datasources/
-        repositories/
-  main.dart
