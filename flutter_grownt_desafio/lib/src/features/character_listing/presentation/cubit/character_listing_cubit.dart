@@ -13,7 +13,10 @@ class CharacterListingCubit extends Cubit<CharacterListingState> {
   final GetCharacters getCharacters;
 
   void fetchCharacters() async {
-    emit(state.copyWith(status: CharacterListingStatus.loading));
+    if (state.characterListing == null ||
+        state.characterListing!.characters.isEmpty) {
+      emit(state.copyWith(status: CharacterListingStatus.loading));
+    }
 
     final result = await getCharacters(
       page: state.characterListing?.nextPage ?? 1,
@@ -32,7 +35,16 @@ class CharacterListingCubit extends Cubit<CharacterListingState> {
         emit(
           state.copyWith(
             status: CharacterListingStatus.loaded,
-            characterListing: characterListing,
+            characterListing: state.characterListing == null
+                ? characterListing
+                : state.characterListing!.copyWith(
+                    characters: [
+                      ...?state.characterListing?.characters,
+                      ...characterListing.characters,
+                    ],
+                    totalItems: characterListing.totalItems,
+                    nextPage: characterListing.nextPage,
+                  ),
           ),
         );
       },

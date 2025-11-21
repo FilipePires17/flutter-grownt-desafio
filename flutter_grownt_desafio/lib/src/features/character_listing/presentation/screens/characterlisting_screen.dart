@@ -29,7 +29,7 @@ class _CharacterListingScreenState extends State<CharacterListingScreen> {
       if (scrollController.position.maxScrollExtent ==
               scrollController.offset &&
           scrollController.offset != 0) {
-        // TODO: Fetch next page
+        characterListingCubit.fetchCharacters();
       }
     });
 
