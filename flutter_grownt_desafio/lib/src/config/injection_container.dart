@@ -11,6 +11,11 @@ import '../features/character/domain/repositories/i_character_repository.dart';
 import '../features/character/domain/usecases/get_character_by_id.dart';
 import '../features/character/domain/usecases/toggle_character_favorite_status.dart';
 import '../features/character/presentation/cubit/character_cubit.dart';
+import '../features/character_listing/data/datasource/character_listing_datasource.dart';
+import '../features/character_listing/data/repositories/character_listing_repository.dart';
+import '../features/character_listing/domain/repositories/i_character_listing_repository.dart';
+import '../features/character_listing/domain/usecases/get_characters.dart';
+import '../features/character_listing/presentation/cubit/character_listing_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -32,6 +37,17 @@ void initContainer() {
   );
   sl.registerLazySingleton<ICharacterDataSource>(
     () => CharacterDataSource(httpManager: sl(), localStorageCaller: sl()),
+  );
+
+  // Listing
+  sl.registerFactory(() => CharacterListingCubit(getCharacters: sl()));
+
+  sl.registerLazySingleton(() => GetCharacters(repository: sl()));
+  sl.registerLazySingleton<ICharacterListingRepository>(
+    () => CharacterListingRepository(dataSource: sl(), networkInfo: sl()),
+  );
+  sl.registerLazySingleton<ICharacterListingDataSource>(
+    () => CharacterListingDatasource(httpManager: sl()),
   );
 
   // Core
