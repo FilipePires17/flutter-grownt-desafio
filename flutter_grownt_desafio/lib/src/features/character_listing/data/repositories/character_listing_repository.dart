@@ -26,4 +26,16 @@ class CharacterListingRepository implements ICharacterListingRepository {
       return const Left(null);
     }
   }
+
+  @override
+  Future<Either<void, List<int>>> getFavoriteCharacterIds() async {
+    final result = await dataSource.getFavoriteCharacterIds();
+    return result;
+  }
+
+  @override
+  Future<Either<void, List<int>>> toggleCharacterFavoriteStatus(int id) async {
+    final result = await dataSource.toggleCharacterFavoriteStatus(id);
+    return result;
+  }
 }

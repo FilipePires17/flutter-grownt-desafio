@@ -1,13 +1,13 @@
 import 'package:fpdart/fpdart.dart';
 
-import '../repositories/i_character_repository.dart';
+import '../repositories/i_character_listing_repository.dart';
 
 class ToggleCharacterFavoriteStatus {
-  final ICharacterRepository repository;
+  final ICharacterListingRepository repository;
 
   const ToggleCharacterFavoriteStatus({required this.repository});
 
-  Future<Either<void, bool>> call(int id) {
+  Future<Either<void, List<int>>> call(int id) {
     return repository.toggleCharacterFavoriteStatus(id);
   }
 }

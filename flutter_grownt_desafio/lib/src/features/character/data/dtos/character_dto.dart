@@ -32,4 +32,33 @@ class CharacterDto extends Character {
       isFavorite: false,
     );
   }
+
+  @override
+  CharacterDto copyWith({
+    int? id,
+    String? name,
+    String? status,
+    String? species,
+    String? type,
+    String? gender,
+    String? image,
+    List<String>? episode,
+    String? origin,
+    String? location,
+    bool? isFavorite,
+  }) {
+    return CharacterDto(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      status: status ?? this.status,
+      species: species ?? this.species,
+      type: type ?? this.type,
+      gender: gender ?? this.gender,
+      image: image ?? this.image,
+      episode: episode ?? this.episode,
+      origin: origin ?? this.origin,
+      location: location ?? this.location,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
+  }
 }

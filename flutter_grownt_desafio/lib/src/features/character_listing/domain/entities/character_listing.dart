@@ -8,7 +8,7 @@ class CharacterListing extends Equatable {
   final int? nextPage;
 
   const CharacterListing({
-    required this.characters,
+    this.characters = const [],
     this.favoriteCharacterIds = const [],
     this.totalItems,
     this.nextPage,

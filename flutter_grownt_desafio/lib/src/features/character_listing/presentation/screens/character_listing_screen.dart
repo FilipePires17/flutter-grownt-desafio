@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/constants/routes.dart';
 import '../cubit/character_listing_cubit.dart';
 
 class CharacterListingScreen extends StatefulWidget {
@@ -62,7 +64,7 @@ class _CharacterListingScreenState extends State<CharacterListingScreen> {
           builder: (context, state) {
             switch (state.status) {
               case CharacterListingStatus.loaded:
-                return state.characterListing!.characters.isEmpty
+                return state.characterListing.characters.isEmpty
                     ? const SliverFillRemaining(
                         child: Center(child: Text('No characters found.')),
                       )
@@ -70,40 +72,67 @@ class _CharacterListingScreenState extends State<CharacterListingScreen> {
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
                             return index <
-                                    state.characterListing!.characters.length
+                                    state.characterListing.characters.length
                                 ? Column(
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(8),
                                         child: Card(
-                                          child: ListTile(
-                                            leading: Image.network(
-                                              state
-                                                  .characterListing!
-                                                  .characters[index]
-                                                  .image,
-                                              width: 50,
-                                              height: 50,
-                                              fit: BoxFit.cover,
+                                          child: GestureDetector(
+                                            onTap: () => Navigator.pushNamed(
+                                              context,
+                                              RouteNames.character,
+                                              arguments: index,
                                             ),
-                                            title: Text(
-                                              state
-                                                  .characterListing!
-                                                  .characters[index]
-                                                  .name,
-                                            ),
-                                            subtitle: Text(
-                                              state
-                                                  .characterListing!
-                                                  .characters[index]
-                                                  .status,
+                                            child: ListTile(
+                                              leading: CachedNetworkImage(
+                                                imageUrl: state
+                                                    .characterListing
+                                                    .characters[index]
+                                                    .image,
+                                                width: 50,
+                                                height: 50,
+                                                fit: BoxFit.cover,
+                                              ),
+                                              title: Text(
+                                                state
+                                                    .characterListing
+                                                    .characters[index]
+                                                    .name,
+                                              ),
+                                              subtitle: Text(
+                                                state
+                                                    .characterListing
+                                                    .characters[index]
+                                                    .status,
+                                              ),
+                                              trailing: IconButton(
+                                                icon: Icon(
+                                                  state
+                                                          .characterListing
+                                                          .characters[index]
+                                                          .isFavorite
+                                                      ? Icons.favorite
+                                                      : Icons.favorite_border,
+                                                  size: 16,
+                                                ),
+                                                onPressed: () {
+                                                  characterListingCubit
+                                                      .toggleFavoriteStatus(
+                                                        state
+                                                            .characterListing
+                                                            .characters[index]
+                                                            .id,
+                                                      );
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
                                       if (index !=
                                           state
-                                                  .characterListing!
+                                                  .characterListing
                                                   .characters
                                                   .length -
                                               1)
@@ -124,10 +153,9 @@ class _CharacterListingScreenState extends State<CharacterListingScreen> {
                                     ),
                                   );
                           },
-                          childCount:
-                              state.characterListing?.hasReachedMax ?? false
-                              ? state.characterListing!.characters.length
-                              : state.characterListing!.characters.length + 1,
+                          childCount: state.characterListing.hasReachedMax
+                              ? state.characterListing.characters.length
+                              : state.characterListing.characters.length + 1,
                         ),
                       );
               default:

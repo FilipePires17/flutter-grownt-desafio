@@ -4,12 +4,12 @@ enum CharacterListingStatus { initial, loading, loaded, error }
 
 class CharacterListingState extends Equatable {
   final CharacterListingStatus status;
-  final CharacterListing? characterListing;
+  final CharacterListing characterListing;
   final String? errorMessage;
 
   const CharacterListingState({
     this.status = CharacterListingStatus.initial,
-    this.characterListing,
+    this.characterListing = const CharacterListing(),
     this.errorMessage,
   });
 
@@ -26,9 +26,5 @@ class CharacterListingState extends Equatable {
   }
 
   @override
-  List<Object> get props => [
-    status,
-    characterListing ?? '',
-    errorMessage ?? '',
-  ];
+  List<Object?> get props => [status, characterListing, errorMessage];
 }

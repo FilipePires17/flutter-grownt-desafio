@@ -30,7 +30,16 @@ class CharacterDataSource implements ICharacterDataSource {
 
       if (response.statusCode == 200) {
         final characterDto = CharacterDto.fromJson(response.data);
-        return Right(characterDto);
+        final favoriteIds = await localStorageCaller.restoreData(
+          table: LocalStorageBoxes.appBox,
+          key: LocalStorageKeys.favoriteCharacterIds,
+        );
+        final result = favoriteIds.fold(
+          (_) => <int>[],
+          (ids) => List<int>.from(ids),
+        );
+
+        return Right(characterDto.copyWith(isFavorite: result.contains(id)));
       } else {
         return const Left(null);
       }
@@ -52,23 +61,19 @@ class CharacterDataSource implements ICharacterDataSource {
         (ids) => List<int>.from(ids),
       );
 
-      final isFavorite = result.contains(id);
-
-      if (isFavorite) {
-        await localStorageCaller.saveData(
-          table: LocalStorageBoxes.appBox,
-          key: LocalStorageKeys.favoriteCharacterIds,
-          value: result.where((item) => item != id).toList(),
-        );
+      if (result.contains(id)) {
+        result.remove(id);
       } else {
-        await localStorageCaller.saveData(
-          table: LocalStorageBoxes.appBox,
-          key: LocalStorageKeys.favoriteCharacterIds,
-          value: [...result, id],
-        );
+        result.add(id);
       }
 
-      return Right(isFavorite);
+      await localStorageCaller.saveData(
+        table: LocalStorageBoxes.appBox,
+        key: LocalStorageKeys.favoriteCharacterIds,
+        value: result,
+      );
+
+      return Right(result.contains(id));
     } catch (e) {
       return const Left(null);
     }
