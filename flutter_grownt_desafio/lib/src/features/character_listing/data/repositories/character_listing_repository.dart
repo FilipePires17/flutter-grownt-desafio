@@ -1,9 +1,11 @@
 import 'package:fpdart/fpdart.dart';
 
 import '../../../../core/platforms/network_info.dart';
+import '../../domain/entities/character_filters.dart';
 import '../../domain/entities/character_listing.dart';
 import '../../domain/repositories/i_character_listing_repository.dart';
 import '../datasource/character_listing_datasource.dart';
+import '../dtos/character_filters_dto.dart';
 
 class CharacterListingRepository implements ICharacterListingRepository {
   final ICharacterListingDataSource dataSource;
@@ -15,9 +17,13 @@ class CharacterListingRepository implements ICharacterListingRepository {
   });
 
   @override
-  Future<Either<void, CharacterListing>> getCharacters({int page = 1}) async {
+  Future<Either<void, CharacterListing>> getCharacters(
+    CharacterFilters filters,
+  ) async {
     if (await networkInfo.isConnected) {
-      final result = await dataSource.getCharacters(page: page);
+      final result = await dataSource.getCharacters(
+        CharacterFiltersDto.fromDomain(filters),
+      );
 
       return result.fold((l) => const Left(null), (dto) {
         return Right(dto);

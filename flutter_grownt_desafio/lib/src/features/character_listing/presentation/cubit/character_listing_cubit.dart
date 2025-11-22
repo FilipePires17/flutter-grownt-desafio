@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../domain/entities/character_filters.dart';
 import '../../domain/entities/character_listing.dart';
 import '../../domain/usecases/get_characters.dart';
 import '../../domain/usecases/get_favorite_character_ids.dart';
@@ -19,15 +20,22 @@ class CharacterListingCubit extends Cubit<CharacterListingState> {
   final ToggleCharacterFavoriteStatus toggleCharacterFavoriteStatus;
   final GetFavoriteCharacterIds getFavoriteCharacterIds;
 
-  void fetchCharacters() async {
+  void fetchCharacters(CharacterFilters filters) async {
     if (state.characterListing.characters.isEmpty) {
       emit(state.copyWith(status: CharacterListingStatus.loading));
       await loadFavoriteCharacterIds();
     }
 
-    final result = await getCharacters(
-      page: state.characterListing.nextPage ?? 1,
-    );
+    if (filters.page <= 1) {
+      emit(
+        state.copyWith(
+          characterListing: CharacterListing(characters: []),
+          status: CharacterListingStatus.loading,
+        ),
+      );
+    }
+
+    final result = await getCharacters(filters);
 
     result.fold(
       (failure) {

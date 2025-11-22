@@ -12,6 +12,7 @@ import '../features/character_listing/domain/repositories/i_character_listing_re
 import '../features/character_listing/domain/usecases/get_characters.dart';
 import '../features/character_listing/domain/usecases/get_favorite_character_ids.dart';
 import '../features/character_listing/presentation/cubit/character_listing_cubit.dart';
+import '../features/character_listing/presentation/cubit/filters_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -24,6 +25,7 @@ void initContainer() {
       getFavoriteCharacterIds: sl(),
     ),
   );
+  sl.registerFactory(() => FiltersCubit());
 
   sl.registerLazySingleton(() => GetCharacters(repository: sl()));
   sl.registerLazySingleton(() => GetFavoriteCharacterIds(repository: sl()));
