@@ -36,4 +36,15 @@ class CharacterListingDto extends CharacterListing {
       nextPage: nextPage,
     );
   }
+
+  factory CharacterListingDto.fromJsonList(List<dynamic> jsonList) {
+    final characters = jsonList
+        .map(
+          (characterJson) =>
+              CharacterDto.fromJson(characterJson as Map<String, dynamic>),
+        )
+        .toList();
+
+    return CharacterListingDto(characters: characters);
+  }
 }

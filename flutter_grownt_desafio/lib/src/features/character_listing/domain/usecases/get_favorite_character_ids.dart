@@ -7,7 +7,7 @@ class GetFavoriteCharacterIds {
 
   const GetFavoriteCharacterIds({required this.repository});
 
-  Future<Either<void, List<int>>> call() {
+  Future<Either<String, List<int>>> call() {
     return repository.getFavoriteCharacterIds();
   }
 }

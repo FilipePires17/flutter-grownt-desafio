@@ -7,7 +7,7 @@ class ToggleCharacterFavoriteStatus {
 
   const ToggleCharacterFavoriteStatus({required this.repository});
 
-  Future<Either<void, List<int>>> call(int id) {
+  Future<Either<String, List<int>>> call(int id) {
     return repository.toggleCharacterFavoriteStatus(id);
   }
 }

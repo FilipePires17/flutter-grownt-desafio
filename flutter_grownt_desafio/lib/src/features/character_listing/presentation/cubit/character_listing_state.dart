@@ -1,6 +1,6 @@
 part of 'character_listing_cubit.dart';
 
-enum CharacterListingStatus { initial, loading, loaded, error }
+enum CharacterListingStatus { initial, loading, loaded, error, initialError }
 
 class CharacterListingState extends Equatable {
   final CharacterListingStatus status;

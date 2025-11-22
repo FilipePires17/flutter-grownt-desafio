@@ -9,7 +9,7 @@ class GetCharacters {
 
   GetCharacters({required this.repository});
 
-  Future<Either<void, CharacterListing>> call(CharacterFilters filters) {
+  Future<Either<String, CharacterListing>> call(CharacterFilters filters) {
     return repository.getCharacters(filters);
   }
 }

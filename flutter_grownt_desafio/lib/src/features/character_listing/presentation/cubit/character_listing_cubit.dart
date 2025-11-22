@@ -5,6 +5,7 @@ import '../../domain/entities/character_filters.dart';
 import '../../domain/entities/character_listing.dart';
 import '../../domain/usecases/get_characters.dart';
 import '../../domain/usecases/get_favorite_character_ids.dart';
+import '../../domain/usecases/get_favorite_characters.dart';
 import '../../domain/usecases/toggle_character_favorite_status.dart';
 
 part 'character_listing_state.dart';
@@ -14,11 +15,13 @@ class CharacterListingCubit extends Cubit<CharacterListingState> {
     required this.getCharacters,
     required this.toggleCharacterFavoriteStatus,
     required this.getFavoriteCharacterIds,
+    required this.getFavoriteCharacters,
   }) : super(CharacterListingState());
 
   final GetCharacters getCharacters;
   final ToggleCharacterFavoriteStatus toggleCharacterFavoriteStatus;
   final GetFavoriteCharacterIds getFavoriteCharacterIds;
+  final GetFavoriteCharacters getFavoriteCharacters;
 
   void fetchCharacters(CharacterFilters filters) async {
     if (state.characterListing.characters.isEmpty) {
@@ -26,10 +29,18 @@ class CharacterListingCubit extends Cubit<CharacterListingState> {
       await loadFavoriteCharacterIds();
     }
 
+    if (state.status == CharacterListingStatus.error) {
+      emit(state.copyWith(status: CharacterListingStatus.loaded));
+    }
+
     if (filters.page <= 1) {
       emit(
         state.copyWith(
-          characterListing: CharacterListing(characters: []),
+          characterListing: state.characterListing.copyWith(
+            characters: [],
+            totalItems: 0,
+            nextPage: null,
+          ),
           status: CharacterListingStatus.loading,
         ),
       );
@@ -41,8 +52,10 @@ class CharacterListingCubit extends Cubit<CharacterListingState> {
       (failure) {
         emit(
           state.copyWith(
-            status: CharacterListingStatus.error,
-            errorMessage: 'Failed to fetch characters',
+            status: state.characterListing.characters.isEmpty
+                ? CharacterListingStatus.initialError
+                : CharacterListingStatus.error,
+            errorMessage: failure,
           ),
         );
       },
@@ -76,7 +89,12 @@ class CharacterListingCubit extends Cubit<CharacterListingState> {
 
     result.fold(
       (failure) {
-        // Handle failure if needed
+        emit(
+          state.copyWith(
+            status: CharacterListingStatus.error,
+            errorMessage: failure,
+          ),
+        );
       },
       (updatedFavoriteIds) {
         final updatedCharacters = state.characterListing.characters.map((
@@ -105,7 +123,12 @@ class CharacterListingCubit extends Cubit<CharacterListingState> {
 
     result.fold(
       (failure) {
-        // Handle failure if needed
+        emit(
+          state.copyWith(
+            status: CharacterListingStatus.error,
+            errorMessage: failure,
+          ),
+        );
       },
       (favoriteIds) {
         emit(
@@ -117,5 +140,39 @@ class CharacterListingCubit extends Cubit<CharacterListingState> {
         );
       },
     );
+  }
+
+  void fetchFavoriteCharacters() {
+    emit(state.copyWith(status: CharacterListingStatus.loading));
+
+    getFavoriteCharacters().then((result) {
+      result.fold(
+        (failure) {
+          emit(
+            state.copyWith(
+              status: CharacterListingStatus.initialError,
+              errorMessage: failure,
+            ),
+          );
+        },
+        (characterListing) {
+          final updatedCharacters = characterListing.characters.map((
+            character,
+          ) {
+            return character.copyWith(isFavorite: true);
+          }).toList();
+          emit(
+            state.copyWith(
+              status: CharacterListingStatus.loaded,
+              characterListing: state.characterListing.copyWith(
+                characters: updatedCharacters,
+                totalItems: characterListing.characters.length,
+                nextPage: characterListing.nextPage,
+              ),
+            ),
+          );
+        },
+      );
+    });
   }
 }

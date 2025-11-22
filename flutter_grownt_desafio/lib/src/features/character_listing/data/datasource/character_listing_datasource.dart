@@ -7,13 +7,15 @@ import '../dtos/character_filters_dto.dart';
 import '../dtos/character_listing_dto.dart';
 
 abstract class ICharacterListingDataSource {
-  Future<Either<void, CharacterListingDto>> getCharacters(
+  Future<Either<String, CharacterListingDto>> getCharacters(
     CharacterFiltersDto filters,
   );
 
-  Future<Either<void, List<int>>> toggleCharacterFavoriteStatus(int id);
+  Future<Either<String, List<int>>> toggleCharacterFavoriteStatus(int id);
 
-  Future<Either<void, List<int>>> getFavoriteCharacterIds();
+  Future<Either<String, List<int>>> getFavoriteCharacterIds();
+
+  Future<Either<String, CharacterListingDto>> getFavoriteCharacters();
 }
 
 class CharacterListingDatasource implements ICharacterListingDataSource {
@@ -26,7 +28,7 @@ class CharacterListingDatasource implements ICharacterListingDataSource {
   });
 
   @override
-  Future<Either<void, CharacterListingDto>> getCharacters(
+  Future<Either<String, CharacterListingDto>> getCharacters(
     CharacterFiltersDto filters,
   ) async {
     try {
@@ -36,63 +38,102 @@ class CharacterListingDatasource implements ICharacterListingDataSource {
         parameters: filters.toQueryParameters(),
       );
 
+      if (response.statusCode != 200) {
+        return Left('Error: ${response.statusCode}');
+      }
+
       final characterListingDto = CharacterListingDto.fromJson(
         response.data as Map<String, dynamic>,
       );
 
       return Right(characterListingDto);
     } catch (e) {
-      return const Left(null);
+      return Left(e.toString());
     }
   }
 
   @override
-  Future<Either<void, List<int>>> getFavoriteCharacterIds() async {
+  Future<Either<String, List<int>>> getFavoriteCharacterIds() async {
     try {
       final favoriteIds = await localStorageCaller.restoreData(
         table: LocalStorageBoxes.appBox,
         key: LocalStorageKeys.favoriteCharacterIds,
       );
 
-      final result = favoriteIds.fold(
-        (_) => <int>[],
-        (ids) => List<int>.from(ids),
+      final result = favoriteIds.fold<Either<String, List<int>>>(
+        (_) => Left('Not able to retrieve favorite character IDs'),
+        (ids) => Right(List<int>.from(ids)),
       );
 
-      return Right(result);
+      return result;
     } catch (e) {
-      return const Left(null);
+      return Left(e.toString());
     }
   }
 
   @override
-  Future<Either<void, List<int>>> toggleCharacterFavoriteStatus(int id) async {
+  Future<Either<String, List<int>>> toggleCharacterFavoriteStatus(
+    int id,
+  ) async {
     try {
-      final favoriteIds = await localStorageCaller.restoreData(
-        table: LocalStorageBoxes.appBox,
-        key: LocalStorageKeys.favoriteCharacterIds,
+      final favoriteIdsResult = await getFavoriteCharacterIds();
+
+      final result = favoriteIdsResult.fold<Either<String, List<int>>>(
+        (failure) => Left(failure),
+        (ids) {
+          List<int> res = List<int>.from(ids);
+          if (res.contains(id)) {
+            res.remove(id);
+          } else {
+            res.add(id);
+          }
+
+          return Right(res);
+        },
       );
 
-      final result = favoriteIds.fold(
-        (_) => <int>[],
-        (ids) => List<int>.from(ids),
-      );
-
-      if (result.contains(id)) {
-        result.remove(id);
-      } else {
-        result.add(id);
+      if (result.isRight()) {
+        await localStorageCaller.saveData(
+          table: LocalStorageBoxes.appBox,
+          key: LocalStorageKeys.favoriteCharacterIds,
+          value: result.getRight(),
+        );
       }
 
-      await localStorageCaller.saveData(
-        table: LocalStorageBoxes.appBox,
-        key: LocalStorageKeys.favoriteCharacterIds,
-        value: result,
-      );
-
-      return Right(result);
+      return result;
     } catch (e) {
-      return const Left(null);
+      return Left(e.toString());
+    }
+  }
+
+  @override
+  Future<Either<String, CharacterListingDto>> getFavoriteCharacters() async {
+    try {
+      final favoriteIdsResult = await getFavoriteCharacterIds();
+
+      return await favoriteIdsResult.fold((failure) async => Left(failure), (
+        favoriteIds,
+      ) async {
+        if (favoriteIds.isEmpty) {
+          return Right(
+            CharacterListingDto(characters: [], totalItems: 0, nextPage: null),
+          );
+        }
+
+        final response = await httpManager.restRequest(
+          url:
+              'https://rickandmortyapi.com/api/character/[${favoriteIds.join(",")}]',
+          method: HttpMethods.get,
+        );
+
+        final characterListingDto = CharacterListingDto.fromJsonList(
+          response.data,
+        );
+
+        return Right(characterListingDto);
+      });
+    } catch (e) {
+      return Left(e.toString());
     }
   }
 }

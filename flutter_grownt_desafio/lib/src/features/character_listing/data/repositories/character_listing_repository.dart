@@ -17,31 +17,43 @@ class CharacterListingRepository implements ICharacterListingRepository {
   });
 
   @override
-  Future<Either<void, CharacterListing>> getCharacters(
+  Future<Either<String, CharacterListing>> getCharacters(
     CharacterFilters filters,
   ) async {
-    if (await networkInfo.isConnected) {
-      final result = await dataSource.getCharacters(
-        CharacterFiltersDto.fromDomain(filters),
-      );
-
-      return result.fold((l) => const Left(null), (dto) {
-        return Right(dto);
-      });
-    } else {
-      return const Left(null);
+    if (!(await networkInfo.isConnected)) {
+      return const Left('No internet connection');
     }
+
+    final result = await dataSource.getCharacters(
+      CharacterFiltersDto.fromDomain(filters),
+    );
+
+    return result.fold((l) => Left(l), (dto) {
+      return Right(dto);
+    });
   }
 
   @override
-  Future<Either<void, List<int>>> getFavoriteCharacterIds() async {
+  Future<Either<String, List<int>>> getFavoriteCharacterIds() async {
     final result = await dataSource.getFavoriteCharacterIds();
     return result;
   }
 
   @override
-  Future<Either<void, List<int>>> toggleCharacterFavoriteStatus(int id) async {
+  Future<Either<String, List<int>>> toggleCharacterFavoriteStatus(
+    int id,
+  ) async {
     final result = await dataSource.toggleCharacterFavoriteStatus(id);
+    return result;
+  }
+
+  @override
+  Future<Either<String, CharacterListing>> getFavoriteCharacters() async {
+    if (!(await networkInfo.isConnected)) {
+      return const Left('No internet connection');
+    }
+
+    final result = await dataSource.getFavoriteCharacters();
     return result;
   }
 }

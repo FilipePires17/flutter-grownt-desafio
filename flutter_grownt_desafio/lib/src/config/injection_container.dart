@@ -5,6 +5,7 @@ import '../core/data/local/local_storage_manager.dart';
 import '../core/data/remote/http_manager.dart';
 import '../core/platforms/data_connection_checker.dart';
 import '../core/platforms/network_info.dart';
+import '../features/character_listing/domain/usecases/get_favorite_characters.dart';
 import '../features/character_listing/domain/usecases/toggle_character_favorite_status.dart';
 import '../features/character_listing/data/datasource/character_listing_datasource.dart';
 import '../features/character_listing/data/repositories/character_listing_repository.dart';
@@ -23,6 +24,7 @@ void initContainer() {
       getCharacters: sl(),
       toggleCharacterFavoriteStatus: sl(),
       getFavoriteCharacterIds: sl(),
+      getFavoriteCharacters: sl(),
     ),
   );
   sl.registerFactory(() => FiltersCubit());
@@ -32,6 +34,7 @@ void initContainer() {
   sl.registerLazySingleton(
     () => ToggleCharacterFavoriteStatus(repository: sl()),
   );
+  sl.registerLazySingleton(() => GetFavoriteCharacters(repository: sl()));
   sl.registerLazySingleton<ICharacterListingRepository>(
     () => CharacterListingRepository(dataSource: sl(), networkInfo: sl()),
   );

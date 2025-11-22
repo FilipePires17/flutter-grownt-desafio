@@ -9,18 +9,21 @@ class CustomTextField extends StatelessWidget {
     this.hintText,
     this.height = 48,
     this.prefixIcon,
+    this.enabled,
   });
 
   final TextEditingController controller;
   final String? hintText;
   final double height;
   final Widget? prefixIcon;
+  final bool? enabled;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: height,
       child: TextField(
+        enabled: enabled,
         controller: controller,
         decoration: InputDecoration(
           border: const OutlineInputBorder(
