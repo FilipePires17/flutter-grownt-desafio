@@ -1,9 +1,11 @@
 import 'package:equatable/equatable.dart';
 
+import '../enums/character_status_enum.dart';
+
 class Character extends Equatable {
   final int id;
   final String name;
-  final String status;
+  final CharacterStatusEnum status;
   final String species;
   final String type;
   final String gender;
@@ -30,7 +32,7 @@ class Character extends Equatable {
   Character copyWith({
     int? id,
     String? name,
-    String? status,
+    CharacterStatusEnum? status,
     String? species,
     String? type,
     String? gender,

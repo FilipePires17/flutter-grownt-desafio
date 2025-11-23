@@ -78,6 +78,8 @@ class CharacterListingDatasource implements ICharacterListingDataSource {
     try {
       final favoriteIdsResult = await getFavoriteCharacterIds();
 
+      List<int> updatedFavoriteIds = [];
+
       final result = favoriteIdsResult.fold<Either<String, List<int>>>(
         (failure) => Left(failure),
         (ids) {
@@ -87,6 +89,7 @@ class CharacterListingDatasource implements ICharacterListingDataSource {
           } else {
             res.add(id);
           }
+          updatedFavoriteIds = res;
 
           return Right(res);
         },
@@ -96,7 +99,7 @@ class CharacterListingDatasource implements ICharacterListingDataSource {
         await localStorageCaller.saveData(
           table: LocalStorageBoxes.appBox,
           key: LocalStorageKeys.favoriteCharacterIds,
-          value: result.getRight(),
+          value: updatedFavoriteIds,
         );
       }
 

@@ -28,10 +28,11 @@ class CustomTextField extends StatelessWidget {
         decoration: InputDecoration(
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(16)),
+            borderSide: BorderSide(color: AppColors.primary),
           ),
           hintText: hintText,
-          hintStyle: const TextStyle(color: Colors.white),
-          fillColor: AppColors.charcoalGrey,
+          hintStyle: const TextStyle(color: AppColors.white),
+          fillColor: AppColors.almostBlack,
           filled: true,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16,

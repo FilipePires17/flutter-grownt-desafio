@@ -1,4 +1,5 @@
 import '../../domain/entities/character.dart';
+import '../../domain/enums/character_status_enum.dart';
 
 class CharacterDto extends Character {
   const CharacterDto({
@@ -19,7 +20,9 @@ class CharacterDto extends Character {
     return CharacterDto(
       id: json['id'],
       name: json['name'],
-      status: json['status'],
+      status: CharacterStatusEnum.values.firstWhere(
+        (s) => s.title.toLowerCase() == json['status'].toString().toLowerCase(),
+      ),
       species: json['species'],
       type: json['type'],
       gender: json['gender'],
@@ -37,7 +40,7 @@ class CharacterDto extends Character {
   CharacterDto copyWith({
     int? id,
     String? name,
-    String? status,
+    CharacterStatusEnum? status,
     String? species,
     String? type,
     String? gender,
