@@ -1,5 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 
+import '../../../../core/error/failure.dart';
 import '../../../../core/platforms/network_info.dart';
 import '../../domain/entities/character_filters.dart';
 import '../../domain/entities/character_listing.dart';
@@ -17,11 +18,11 @@ class CharacterListingRepository implements ICharacterListingRepository {
   });
 
   @override
-  Future<Either<String, CharacterListing>> getCharacters(
+  Future<Either<Failure, CharacterListing>> getCharacters(
     CharacterFilters filters,
   ) async {
     if (!(await networkInfo.isConnected)) {
-      return const Left('No internet connection');
+      return const Left(NetworkFailure('No internet connection'));
     }
 
     final result = await dataSource.getCharacters(
@@ -34,13 +35,13 @@ class CharacterListingRepository implements ICharacterListingRepository {
   }
 
   @override
-  Future<Either<String, List<int>>> getFavoriteCharacterIds() async {
+  Future<Either<Failure, List<int>>> getFavoriteCharacterIds() async {
     final result = await dataSource.getFavoriteCharacterIds();
     return result;
   }
 
   @override
-  Future<Either<String, List<int>>> toggleCharacterFavoriteStatus(
+  Future<Either<Failure, List<int>>> toggleCharacterFavoriteStatus(
     int id,
   ) async {
     final result = await dataSource.toggleCharacterFavoriteStatus(id);
@@ -48,9 +49,9 @@ class CharacterListingRepository implements ICharacterListingRepository {
   }
 
   @override
-  Future<Either<String, CharacterListing>> getFavoriteCharacters() async {
+  Future<Either<Failure, CharacterListing>> getFavoriteCharacters() async {
     if (!(await networkInfo.isConnected)) {
-      return const Left('No internet connection');
+      return const Left(NetworkFailure('No internet connection'));
     }
 
     final result = await dataSource.getFavoriteCharacters();

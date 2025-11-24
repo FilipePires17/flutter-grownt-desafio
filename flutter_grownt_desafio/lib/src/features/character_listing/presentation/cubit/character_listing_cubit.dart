@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../../core/error/failure.dart';
 import '../../domain/entities/character_filters.dart';
 import '../../domain/entities/character_listing.dart';
 import '../../domain/usecases/get_characters.dart';
@@ -55,7 +56,7 @@ class CharacterListingCubit extends Cubit<CharacterListingState> {
             status: state.characterListing.characters.isEmpty
                 ? CharacterListingStatus.initialError
                 : CharacterListingStatus.error,
-            errorMessage: failure,
+            error: failure,
           ),
         );
       },
@@ -90,10 +91,7 @@ class CharacterListingCubit extends Cubit<CharacterListingState> {
     result.fold(
       (failure) {
         emit(
-          state.copyWith(
-            status: CharacterListingStatus.error,
-            errorMessage: failure,
-          ),
+          state.copyWith(status: CharacterListingStatus.error, error: failure),
         );
       },
       (updatedFavoriteIds) {
@@ -124,10 +122,7 @@ class CharacterListingCubit extends Cubit<CharacterListingState> {
     result.fold(
       (failure) {
         emit(
-          state.copyWith(
-            status: CharacterListingStatus.error,
-            errorMessage: failure,
-          ),
+          state.copyWith(status: CharacterListingStatus.error, error: failure),
         );
       },
       (favoriteIds) {
@@ -151,7 +146,7 @@ class CharacterListingCubit extends Cubit<CharacterListingState> {
           emit(
             state.copyWith(
               status: CharacterListingStatus.initialError,
-              errorMessage: failure,
+              error: failure,
             ),
           );
         },

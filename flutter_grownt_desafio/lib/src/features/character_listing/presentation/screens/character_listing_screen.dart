@@ -111,12 +111,11 @@ class _CharacterListingScreenState extends State<CharacterListingScreen> {
         ),
       ),
       appBar: AppBar(
-        backgroundColor: AppColors.secondary,
+        backgroundColor: AppColors.primary,
         title: CustomTextField(
           controller: searchController,
           hintText: 'Search Characters',
           height: 40,
-          prefixIcon: const Icon(Icons.search, color: AppColors.primary),
           enabled: !isFavoriteFilterActive,
         ),
       ),
@@ -133,8 +132,9 @@ class _CharacterListingScreenState extends State<CharacterListingScreen> {
                       state.status == CharacterListingStatus.initialError) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
+                        backgroundColor: AppColors.tertiary,
                         content: Text(
-                          state.errorMessage ?? 'An error occurred',
+                          state.error?.message ?? 'An error occurred',
                         ),
                       ),
                     );
@@ -168,7 +168,7 @@ class _CharacterListingScreenState extends State<CharacterListingScreen> {
                               color: AppColors.primary,
                             ),
                             Text(
-                              state.errorMessage ??
+                              state.error?.message ??
                                   'An error occurred while fetching characters.',
                               textAlign: TextAlign.center,
                             ),

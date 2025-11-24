@@ -1,5 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 
+import '../../../../core/error/failure.dart';
 import '../entities/character_filters.dart';
 import '../entities/character_listing.dart';
 import '../repositories/i_character_listing_repository.dart';
@@ -9,7 +10,7 @@ class GetCharacters {
 
   GetCharacters({required this.repository});
 
-  Future<Either<String, CharacterListing>> call(CharacterFilters filters) {
+  Future<Either<Failure, CharacterListing>> call(CharacterFilters filters) {
     return repository.getCharacters(filters);
   }
 }

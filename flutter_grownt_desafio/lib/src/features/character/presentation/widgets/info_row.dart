@@ -20,7 +20,7 @@ class InfoRow extends StatelessWidget {
             fontSize: 20,
           ),
         ),
-        Text(info, style: TextStyle(color: AppColors.white, fontSize: 20)),
+        Text(info, style: TextStyle(color: AppColors.secondary, fontSize: 20)),
       ],
     );
   }

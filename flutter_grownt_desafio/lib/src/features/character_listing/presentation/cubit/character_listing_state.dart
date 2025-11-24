@@ -5,26 +5,26 @@ enum CharacterListingStatus { initial, loading, loaded, error, initialError }
 class CharacterListingState extends Equatable {
   final CharacterListingStatus status;
   final CharacterListing characterListing;
-  final String? errorMessage;
+  final Failure? error;
 
   const CharacterListingState({
     this.status = CharacterListingStatus.initial,
     this.characterListing = const CharacterListing(),
-    this.errorMessage,
+    this.error,
   });
 
   CharacterListingState copyWith({
     CharacterListingStatus? status,
     CharacterListing? characterListing,
-    String? errorMessage,
+    Failure? error,
   }) {
     return CharacterListingState(
       status: status ?? this.status,
       characterListing: characterListing ?? this.characterListing,
-      errorMessage: errorMessage ?? this.errorMessage,
+      error: error ?? this.error,
     );
   }
 
   @override
-  List<Object?> get props => [status, characterListing, errorMessage];
+  List<Object?> get props => [status, characterListing, error];
 }

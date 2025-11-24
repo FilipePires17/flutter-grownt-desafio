@@ -8,14 +8,12 @@ class CustomTextField extends StatefulWidget {
     required this.controller,
     this.hintText,
     this.height = 48,
-    this.prefixIcon,
     this.enabled,
   });
 
   final TextEditingController controller;
   final String? hintText;
   final double height;
-  final Widget? prefixIcon;
   final bool? enabled;
 
   @override
@@ -40,7 +38,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         decoration: InputDecoration(
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(16)),
-            borderSide: BorderSide(color: AppColors.primary),
+            borderSide: BorderSide(color: AppColors.secondary),
           ),
           hintText: widget.hintText,
           hintStyle: const TextStyle(color: AppColors.white),
@@ -52,14 +50,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
             horizontal: 16,
             vertical: 4,
           ),
-          prefixIcon: widget.prefixIcon,
+          prefixIcon: const Icon(Icons.search, color: AppColors.secondary),
           suffixIcon: widget.controller.text != ''
               ? GestureDetector(
                   onTap: () {
                     widget.controller.text = '';
                     setState(() {});
                   },
-                  child: Icon(Icons.close, color: AppColors.primary),
+                  child: const Icon(Icons.close, color: AppColors.secondary),
                 )
               : null,
         ),

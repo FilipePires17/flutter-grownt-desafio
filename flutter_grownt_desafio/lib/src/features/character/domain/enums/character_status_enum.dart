@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 
 enum CharacterStatusEnum {
-  alive('Alive', '🙂', Colors.green),
+  alive('Alive', '🙂', AppColors.secondary),
   dead('Dead', '☠️', Colors.red),
   unknown('Unknown', '🤷', AppColors.charcoalGrey);
 

@@ -12,7 +12,7 @@ class FavoriteIcon extends StatelessWidget {
     return Icon(
       isFavorite ? Icons.favorite : Icons.favorite_border,
       size: 24,
-      color: isFavorite ? AppColors.primary : AppColors.lightGray,
+      color: isFavorite ? AppColors.secondary : AppColors.lightGray,
     );
   }
 }
