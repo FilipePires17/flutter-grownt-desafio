@@ -49,7 +49,12 @@ class _CharacterScreenState extends State<CharacterScreen> {
                 onPressed: () {
                   characterListingCubit.toggleFavoriteStatus(character.id);
                 },
-                icon: FavoriteIcon(isFavorite: character.isFavorite),
+                icon: FavoriteIcon(
+                  isFavorite: state
+                      .characterListing
+                      .characters[widget.index]
+                      .isFavorite,
+                ),
               );
             },
           ),

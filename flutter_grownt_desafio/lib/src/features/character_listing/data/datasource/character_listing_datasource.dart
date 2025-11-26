@@ -12,9 +12,9 @@ abstract class ICharacterListingDataSource {
     CharacterFiltersDto filters,
   );
 
-  Future<Either<Failure, List<int>>> toggleCharacterFavoriteStatus(int id);
-
   Future<Either<Failure, List<int>>> getFavoriteCharacterIds();
+
+  Future<Either<Failure, List<int>>> toggleCharacterFavoriteStatus(int id);
 
   Future<Either<Failure, CharacterListingDto>> getFavoriteCharacters();
 }
@@ -63,61 +63,60 @@ class CharacterListingDatasource implements ICharacterListingDataSource {
 
   @override
   Future<Either<Failure, List<int>>> getFavoriteCharacterIds() async {
-    try {
-      final favoriteIds = await localStorageCaller.restoreData(
-        table: LocalStorageBoxes.appBox,
-        key: LocalStorageKeys.favoriteCharacterIds,
-      );
+    final favoriteIds = await localStorageCaller.restoreData(
+      table: LocalStorageBoxes.appBox,
+      key: LocalStorageKeys.favoriteCharacterIds,
+    );
 
-      final result = favoriteIds.fold<Either<Failure, List<int>>>(
-        (_) => Left(
-          LocalStorageFailure('Not able to retrieve favorite character IDs'),
-        ),
-        (ids) => Right(List<int>.from(ids)),
-      );
+    final result = favoriteIds.fold<Either<Failure, List<int>>>(
+      (_) => Left(
+        LocalStorageFailure('Not able to retrieve favorite character IDs'),
+      ),
+      (ids) => Right(List<int>.from(ids)),
+    );
 
-      return result;
-    } catch (e) {
-      return Left(LocalStorageFailure('Unknown Error: $e'));
-    }
+    return result;
   }
 
   @override
   Future<Either<Failure, List<int>>> toggleCharacterFavoriteStatus(
     int id,
   ) async {
-    try {
-      final favoriteIdsResult = await getFavoriteCharacterIds();
+    final favoriteIdsResult = await getFavoriteCharacterIds();
 
-      List<int> updatedFavoriteIds = [];
+    List<int> updatedFavoriteIds = [];
 
-      final result = favoriteIdsResult.fold<Either<Failure, List<int>>>(
-        (failure) => Left(failure),
-        (ids) {
-          List<int> res = List<int>.from(ids);
-          if (res.contains(id)) {
-            res.remove(id);
-          } else {
-            res.add(id);
-          }
-          updatedFavoriteIds = res;
+    final result = favoriteIdsResult.fold<Either<Failure, List<int>>>(
+      (failure) => Left(failure),
+      (ids) {
+        List<int> res = List<int>.from(ids);
+        if (res.contains(id)) {
+          res.remove(id);
+        } else {
+          res.add(id);
+        }
+        updatedFavoriteIds = res;
 
-          return Right(res);
-        },
+        return Right(res);
+      },
+    );
+
+    if (result.isRight()) {
+      final res = await localStorageCaller.saveData(
+        table: LocalStorageBoxes.appBox,
+        key: LocalStorageKeys.favoriteCharacterIds,
+        value: updatedFavoriteIds,
       );
 
-      if (result.isRight()) {
-        await localStorageCaller.saveData(
-          table: LocalStorageBoxes.appBox,
-          key: LocalStorageKeys.favoriteCharacterIds,
-          value: updatedFavoriteIds,
-        );
-      }
-
-      return result;
-    } catch (e) {
-      return Left(LocalStorageFailure('Unknown Error: $e'));
+      return res.fold(
+        (_) => Left(LocalStorageFailure('Unable to update favorite status.')),
+        (isSaved) => isSaved
+            ? result
+            : Left(LocalStorageFailure('Unable to update favorite status.')),
+      );
     }
+
+    return result;
   }
 
   @override
@@ -149,11 +148,14 @@ class CharacterListingDatasource implements ICharacterListingDataSource {
           );
         }
 
-        final characterListingDto = CharacterListingDto.fromJsonList(
-          response.data,
-        );
-
-        return Right(characterListingDto);
+        try {
+          final characterListingDto = CharacterListingDto.fromJsonList(
+            response.data,
+          );
+          return Right(characterListingDto);
+        } catch (e) {
+          return Left(DataParsingFailure('Error parsing server data'));
+        }
       });
     } catch (e) {
       return Left(NetworkFailure('Unknown Error: $e'));
