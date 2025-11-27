@@ -14,3 +14,6 @@ O código foi organizado usando a estrutura de feature-first, a arquitetura util
 
 ### Ferramentas utilizadas
 Para gerenciamento de estado foi utilizado o bloc juntamente com o getit. Para persistência de dados localmente foi utilizado o Hive.
+
+### Testes
+Para os testes as ferramentas utilizadas foram: mockito para criar classes com métodos mockados e bloc_test para testar os estados dos blocs da aplicação.
