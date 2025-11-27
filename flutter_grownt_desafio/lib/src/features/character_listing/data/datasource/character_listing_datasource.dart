@@ -68,14 +68,12 @@ class CharacterListingDatasource implements ICharacterListingDataSource {
       key: LocalStorageKeys.favoriteCharacterIds,
     );
 
-    final result = favoriteIds.fold<Either<Failure, List<int>>>(
+    return favoriteIds.fold<Either<Failure, List<int>>>(
       (_) => Left(
         LocalStorageFailure('Not able to retrieve favorite character IDs'),
       ),
       (ids) => Right(List<int>.from(ids)),
     );
-
-    return result;
   }
 
   @override

@@ -135,6 +135,7 @@ class _CharacterListingScreenState extends State<CharacterListingScreen> {
                         backgroundColor: AppColors.tertiary,
                         content: Text(
                           state.error?.message ?? 'An error occurred',
+                          style: TextStyle(color: AppColors.black),
                         ),
                       ),
                     );
